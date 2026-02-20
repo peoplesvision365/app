@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lotto Number Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <h1>Lotto Number Generator</h1>
+        <div class="theme-toggle" role="group" aria-label="Theme">
+            <button class="theme-btn" type="button" data-theme="light" aria-pressed="false">White</button>
+            <button class="theme-btn" type="button" data-theme="dark" aria-pressed="false">Dark</button>
+        </div>
         <div id="lotto-numbers" class="lotto-numbers-container"></div>
         <button id="generate-btn">Generate Numbers</button>
     </div>
