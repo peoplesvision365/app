@@ -2,24 +2,37 @@ class LottoBall extends HTMLElement {
     constructor() {
         super();
         const shadow = this.attachShadow({ mode: 'open' });
+        this.circle = document.createElement('div');
+        this.circle.style.width = '50px';
+        this.circle.style.height = '50px';
+        this.circle.style.borderRadius = '50%';
+        this.circle.style.display = 'flex';
+        this.circle.style.justifyContent = 'center';
+        this.circle.style.alignItems = 'center';
+        this.circle.style.fontSize = '1.5rem';
+        this.circle.style.fontWeight = 'bold';
+        this.circle.style.color = 'white';
+
+        shadow.appendChild(this.circle);
+    }
+
+    static get observedAttributes() {
+        return ['number', 'color'];
+    }
+
+    connectedCallback() {
+        this.updateBall();
+    }
+
+    attributeChangedCallback() {
+        this.updateBall();
+    }
+
+    updateBall() {
         const number = this.getAttribute('number');
         const color = this.getAttribute('color');
-
-        const circle = document.createElement('div');
-        circle.style.backgroundColor = color;
-        circle.style.width = '50px';
-        circle.style.height = '50px';
-        circle.style.borderRadius = '50%';
-        circle.style.display = 'flex';
-        circle.style.justifyContent = 'center';
-        circle.style.alignItems = 'center';
-        circle.style.fontSize = '1.5rem';
-        circle.style.fontWeight = 'bold';
-        circle.style.color = 'white';
-
-        circle.textContent = number;
-
-        shadow.appendChild(circle);
+        this.circle.style.backgroundColor = color || '#888';
+        this.circle.textContent = number || '';
     }
 }
 
@@ -50,20 +63,21 @@ function initTheme() {
 
 function generateLottoNumbers() {
     lottoNumbersContainer.innerHTML = '';
-    const numbers = new Set();
-    while (numbers.size < 6) {
-        numbers.add(Math.floor(Math.random() * 45) + 1);
+    const pool = Array.from({ length: 45 }, (_, i) => i + 1);
+    for (let i = pool.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
     }
+    const numbers = pool.slice(0, 6);
 
     const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3'];
-    let colorIndex = 0;
 
-    for (const number of numbers) {
+    numbers.forEach((number, index) => {
         const lottoBall = document.createElement('lotto-ball');
         lottoBall.setAttribute('number', number);
-        lottoBall.setAttribute('color', colors[colorIndex++]);
+        lottoBall.setAttribute('color', colors[index % colors.length]);
         lottoNumbersContainer.appendChild(lottoBall);
-    }
+    });
 }
 
 generateBtn.addEventListener('click', generateLottoNumbers);
